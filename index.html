@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>For Gayatri ❤️</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        /* RESET & BASE */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            font-family: 'Montserrat', sans-serif;
+            background-color: #000;
+            color: #fff;
+            /* Scroll is locked initially via JS, but we set overflow-x hidden always */
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* VARS */
+        :root {
+            --primary-pink: #ffb7c5;
+            --rose-gold: #b76e79;
+            --deep-rose: #8a3a4b;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        /* UTILS */
+        .cursive { font-family: 'Great Vibes', cursive; }
+        .serif { font-family: 'Playfair Display', serif; }
+        .hidden { opacity: 0; pointer-events: none; }
+        
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 1.2s ease, transform 1.2s ease;
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* BACKGROUND & PARTICLES */
+        #bg-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at center, #1a0508 0%, #000000 100%);
+        }
+
+        .floating-heart {
+            position: fixed;
+            color: var(--primary-pink);
+            font-size: 1.5rem;
+            animation: floatUp 10s linear infinite;
+            opacity: 0;
+            z-index: 0;
+            text-shadow: 0 0 10px var(--primary-pink);
+            pointer-events: none;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(110vh) scale(0.5); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+        }
+
+        /* SPARKLES */
+        .sparkle {
+            position: absolute;
+            width: 4px; height: 4px;
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #fff, 0 0 20px var(--primary-pink);
+            animation: sparkleAnim 2s infinite;
+            pointer-events: none;
+        }
+        @keyframes sparkleAnim {
+            0% { opacity: 0; transform: scale(0); }
+            50% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0); }
+        }
+
+        /* 1. LOADING SCREEN (TAP TO START) */
+        #loading-screen {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, #000 0%, #2a0810 100%);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            transition: opacity 1.5s ease, transform 1.5s ease;
+        }
+        
+        .loading-text {
+            font-size: 3rem;
+            color: var(--primary-pink);
+            margin-bottom: 30px;
+            text-shadow: 0 0 20px var(--rose-gold);
+            animation: pulse 2s infinite;
+        }
+
+        .tap-btn {
+            padding: 15px 40px;
+            background: transparent;
+            border: 2px solid var(--primary-pink);
+            color: var(--primary-pink);
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+            animation: fadeIn 2s ease 1s forwards;
+            opacity: 0;
+        }
+        
+        .tap-btn:active {
+            background: var(--primary-pink);
+            color: #000;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 1; text-shadow: 0 0 15px var(--primary-pink); }
+            100% { transform: scale(1); opacity: 0.8; }
+        }
+        @keyframes fadeIn { to { opacity: 1; } }
+
+        /* 2. HERO SECTION */
+        section {
+            min-height: 100vh;
+            width: 100%;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        #hero {
+            /* Romantic Gradient Background */
+            background: linear-gradient(135deg, #1a0508 0%, #3a0e16 100%);
+            /* Start invisible, fade in after loader */
+            opacity: 0; 
+            transition: opacity 2s ease;
+        }
+        
+        #hero.active {
+            opacity: 1;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .hero-img-box {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 4px solid var(--primary-pink);
+            box-shadow: 0 0 30px rgba(255, 183, 197, 0.4);
+            overflow: hidden;
+            margin: 0 auto 20px auto;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 1.5s ease-out;
+        }
+
+        .hero-img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            color: var(--primary-pink);
+            margin-bottom: 15px;
+            text-shadow: 0 0 15px rgba(255, 183, 197, 0.6);
+            opacity: 0; /* JS will animate */
+            transform: translateY(30px);
+            transition: all 1.5s ease-out;
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #fff;
+            max-width: 90%;
+            margin: 0 auto;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+            opacity: 0; /* JS will animate */
+            transform: translateY(30px);
+            transition: all 1.5s ease-out 0.5s; /* Delay */
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0; /* Hidden initially */
+            transition: opacity 1s ease;
+            z-index: 10;
+        }
+
+        .scroll-text {
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            color: #fff;
+            text-shadow: 0 0 5px var(--primary-pink);
+        }
+
+        .scroll-arrow {
+            font-size: 2rem;
+            color: var(--primary-pink);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        /* 3. MEMORY GALLERY (THE BOX) */
+        #memories {
+            padding: 50px 0;
+            background: linear-gradient(to bottom, #1a0508, #000);
+            min-height: auto; /* Allow natural height */
+        }
+
+        .gallery-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: var(--primary-pink);
+            margin-bottom: 30px;
+            text-shadow: 0 0 10px var(--rose-gold);
+        }
+
+        /* Horizontal Scrolling Container */
+        .gallery-container {
+            display: flex;
+            overflow-x: auto;
+            gap: 20px;
+            padding: 20px 40px;
+            scroll-snap-type: x mandatory;
+            width: 100%;
+            -webkit-overflow-scrolling: touch;
+            /* Hide scrollbar */
+            scrollbar-width: none; /* Firefox */
+        }
+        .gallery-container::-webkit-scrollbar {
+            display: none; /* Chrome/Safari */
+        }
+
+        .gallery-card {
+            flex: 0 0 80%; /* Show part of next slide */
+            max-width: 320px;
+            scroll-snap-align: center;
+            background: #fff;
+            padding: 15px 15px 40px 15px; /* Polaroid bottom padding */
+            border-radius: 4px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        .gallery-card.active {
+            transform: scale(1);
+            z-index: 2;
+        }
+
+        .gallery-card img {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 3/4; /* Vertical portrait aspect */
+            object-fit: cover;
+            border-bottom: 1px solid #eee;
+            display: block;
+        }
+
+        .gallery-card p {
+            font-family: 'Great Vibes', cursive;
+            color: #333;
+            font-size: 1.8rem;
+            margin-top: 15px;
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        /* 4. LOVE LETTER */
+        #love-letter {
+            padding: 60px 20px;
+            background: radial-gradient(circle, #2a0810 0%, #000 100%);
+        }
+
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 40px 30px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotateBg 10s linear infinite;
+            pointer-events: none;
+        }
+        @keyframes rotateBg { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        .letter-content {
+            position: relative;
+            z-index: 1;
+            font-size: 1.2rem;
+            line-height: 2;
+            color: #fff;
+            min-height: 220px;
+            font-style: italic;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1.2em;
+            background-color: var(--primary-pink);
+            animation: blink 1s infinite;
+            vertical-align: middle;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* 5. PROPOSAL SECTION */
+        #proposal {
+            background: #000;
+            text-align: center;
+            padding-bottom: 50px;
+        }
+
+        .ring-container {
+            width: 180px;
+            height: 180px;
+            margin-bottom: 30px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .ring-emoji {
+            font-size: 6rem;
+            animation: ringFloat 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.5));
+            z-index: 2;
+        }
+        
+        .ring-glow {
+            position: absolute;
+            width: 100%; height: 100%;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.2) 0%, transparent 70%);
+            animation: pulseGlow 2s infinite;
+        }
+
+        @keyframes ringFloat {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-15px) scale(1.05); }
+        }
+        @keyframes pulseGlow {
+            0% { transform: scale(0.8); opacity: 0.5; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+            100% { transform: scale(0.8); opacity: 0.5; }
+        }
+
+        .proposal-text {
+            font-size: 3rem;
+            color: #fff;
+            margin-bottom: 50px;
+            line-height: 1.2;
+            text-shadow: 0 0 10px rgba(255,255,255,0.3);
+        }
+
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 100%;
+            max-width: 280px;
+        }
+
+        .btn {
+            background: #fff;
+            color: #000;
+            border: none;
+            padding: 18px 30px;
+            font-size: 1.3rem;
+            border-radius: 50px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+            transition: 0.5s;
+        }
+        
+        .btn:hover::after {
+            left: 100%;
+        }
+
+        .btn:active { transform: scale(0.95); }
+
+        .btn-yes {
+            background: var(--primary-pink);
+            color: #000;
+            box-shadow: 0 0 25px var(--primary-pink);
+        }
+        
+        .btn-forever {
+            background: transparent;
+            border: 2px solid #fff;
+            color: #fff;
+            box-shadow: none;
+        }
+
+        /* OVERLAY - YES */
+        .yes-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1s ease;
+        }
+
+        .yes-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        /* 6. FINAL SCREEN */
+        .final-msg {
+            font-size: 2.5rem;
+            color: var(--primary-pink);
+            text-align: center;
+            margin-bottom: 30px;
+            line-height: 1.4;
+            text-shadow: 0 0 20px var(--rose-gold);
+        }
+        
+        /* MUSIC INDICATOR (No Pause) */
+        .music-indicator {
+            position: fixed;
+            top: 20px; right: 20px;
+            z-index: 1000;
+            opacity: 0; /* Hidden until music starts */
+            transition: opacity 1s;
+            animation: spin 5s linear infinite;
+            font-size: 1.5rem;
+            filter: drop-shadow(0 0 5px #fff);
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+    </style>
+</head>
+<body>
+
+    <!-- AUDIO -->
+    <audio id="bg-music" loop>
+        <!-- Primary: User's local file -->
+        <source src="music.mp3" type="audio/mp3">
+        <!-- Fallback: Romantic Piano (if local file missing) -->
+        <source src="https://cdn.pixabay.com/download/audio/2022/03/10/audio_c8c8a73467.mp3?filename=piano-moment-9835.mp3" type="audio/mp3">
+    </audio>
+    <div class="music-indicator" id="music-icon">🎵</div>
+
+    <!-- BACKGROUND CANVAS -->
+    <div id="bg-canvas"></div>
+
+    <!-- 1. LOADING SCREEN -->
+    <div id="loading-screen">
+        <div class="cursive loading-text">For Gayatri ❤️</div>
+        <button class="tap-btn" onclick="startExperience()">Tap to Open</button>
+    </div>
+
+    <!-- 2. HERO SECTION -->
+    <section id="hero">
+        <div class="hero-content">
+            <div class="hero-img-box">
+                <img src="images/1.jpeg" alt="Gayatri">
+            </div>
+            <h1 class="cursive hero-title">Gayatri</h1>
+            <p class="hero-subtitle">You are my today, my tomorrow, my forever</p>
+        </div>
+        <div class="scroll-indicator" id="scroll-hint">
+            <span class="scroll-text">SCROLL DOWN</span>
+            <div class="scroll-arrow">↓</div>
+        </div>
+    </section>
+
+    <!-- 3. MEMORY GALLERY -->
+    <section id="memories">
+        <h2 class="gallery-title cursive">Our Beautiful Memories</h2>
+        <div class="gallery-container">
+            <div class="gallery-card">
+                <img src="images/1.jpeg" alt="Memory 1">
+                <p>The moment I fell for you</p>
+            </div>
+            <div class="gallery-card">
+                <img src="images/2.jpeg" alt="Memory 2">
+                <p>Every smile of yours</p>
+            </div>
+            <div class="gallery-card">
+                <img src="images/3.jpeg" alt="Memory 3">
+                <p>My safe place</p>
+            </div>
+            <div class="gallery-card">
+                <img src="images/4.jpeg" alt="Memory 4">
+                <p>My happiness</p>
+            </div>
+            <div class="gallery-card">
+                <img src="images/5.jpeg" alt="Memory 5">
+                <p>My forever</p>
+            </div>
+            <div class="gallery-card">
+                <img src="images/6.jpeg" alt="Memory 6">
+                <p>Another beautiful moment</p>
+            </div>
+            <div class="gallery-card">
+                <img src="images/7.jpeg" alt="Memory 7">
+                <p>Our laughter</p>
+            </div>
+            <div class="gallery-card">
+                <img src="images/8.jpeg" alt="Memory 8">
+                <p>Our adventures</p>
+            </div>
+            <div class="gallery-card">
+                <img src="images/9.jpeg" alt="Memory 9">
+                <p>Your eyes</p>
+            </div>
+            <div class="gallery-card">
+                <img src="images/10.jpeg" alt="Memory 10">
+                <p>Your smile</p>
+            </div>
+            <div class="gallery-card">
+                <img src="images/11.jpeg" alt="Memory 11">
+                <p>Always us</p>
+            </div>
+            <div class="gallery-card">
+                <img src="images/12.jpeg" alt="Memory 12">
+                <p>Forever mine</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. LOVE LETTER -->
+    <section id="love-letter">
+        <div class="glass-card fade-in">
+            <div class="letter-content serif" id="typed-text"></div>
+        </div>
+    </section>
+
+    <!-- 5. PROPOSAL SECTION -->
+    <section id="proposal">
+        <div class="ring-container fade-in">
+            <div class="ring-glow"></div>
+            <div class="ring-emoji">💍</div>
+        </div>
+        <h2 class="cursive proposal-text fade-in">Will you marry me?</h2>
+        <div class="btn-group fade-in">
+            <button class="btn btn-yes" onclick="sayYes()">YES ❤️</button>
+            <button class="btn btn-forever" onclick="sayYes()">FOREVER 💍</button>
+        </div>
+    </section>
+
+    <!-- YES OVERLAY -->
+    <div class="yes-overlay" id="yes-screen">
+        <div class="ring-emoji" style="font-size: 4rem; margin-bottom: 20px;">💑</div>
+        <h1 class="cursive final-msg">I knew it ❤️<br>I love you forever, Gayatri</h1>
+        <p style="margin-top:20px; font-size:1.2rem; opacity:0.8; color:#fff;">This is just the beginning...</p>
+    </div>
+
+    <script>
+        // --- SETUP ---
+        const body = document.body;
+        const audio = document.getElementById('bg-music');
+        const hero = document.getElementById('hero');
+        const heroTitle = document.querySelector('.hero-title');
+        const heroSubtitle = document.querySelector('.hero-subtitle');
+        const heroImg = document.querySelector('.hero-img-box');
+        const scrollHint = document.getElementById('scroll-hint');
+        
+        // Lock scroll initially
+        body.style.overflow = 'hidden';
+
+        // --- START EXPERIENCE (Unlock Audio & Scroll) ---
+        function startExperience() {
+            // 1. Play Music (Never pause)
+            audio.play().then(() => {
+                document.getElementById('music-icon').style.opacity = '1';
+            }).catch(e => console.log("Audio play error", e));
+
+            // 2. Hide Loader
+            const loader = document.getElementById('loading-screen');
+            loader.style.opacity = '0';
+            setTimeout(() => {
+                loader.style.display = 'none';
+                
+                // 3. Show Hero
+                hero.classList.add('active');
+                
+                // 4. Animate Hero Elements
+                setTimeout(() => {
+                    // Show Image
+                    if(heroImg) {
+                        heroImg.style.opacity = '1';
+                        heroImg.style.transform = 'scale(1)';
+                    }
+
+                    // Show Title
+                    setTimeout(() => {
+                        heroTitle.style.opacity = '1';
+                        heroTitle.style.transform = 'translateY(0)';
+                        
+                        // Show Subtitle
+                        setTimeout(() => {
+                            heroSubtitle.style.opacity = '1';
+                            heroSubtitle.style.transform = 'translateY(0)';
+                            
+                            // 5. UNLOCK SCROLL & Show Hint (After text is read)
+                            setTimeout(() => {
+                                body.style.overflow = 'auto';
+                                scrollHint.style.opacity = '1';
+                            }, 2000); // 2s after subtitle
+                            
+                        }, 1500); // 1.5s after title
+                    }, 800); // 0.8s after image
+                }, 500); // 0.5s after hero fades in
+            }, 1500);
+        }
+
+        // --- FLOATING HEARTS & SPARKLES ---
+        function createParticle(type) {
+            const el = document.createElement('div');
+            if (type === 'heart') {
+                el.classList.add('floating-heart');
+                el.innerHTML = '❤️';
+                el.style.fontSize = Math.random() * 1.5 + 0.5 + 'rem';
+                el.style.animationDuration = Math.random() * 5 + 5 + 's';
+            } else {
+                el.classList.add('sparkle');
+                el.style.top = Math.random() * 100 + 'vh';
+                el.style.animationDuration = Math.random() * 2 + 1 + 's';
+            }
+            
+            el.style.left = Math.random() * 100 + 'vw';
+            document.body.appendChild(el);
+            
+            setTimeout(() => {
+                el.remove();
+            }, type === 'heart' ? 10000 : 3000);
+        }
+        
+        setInterval(() => createParticle('heart'), 800);
+        setInterval(() => createParticle('sparkle'), 1000);
+
+        // --- GALLERY OBSERVER (Scale effect) ---
+        const galleryObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                } else {
+                    entry.target.classList.remove('active');
+                }
+            });
+        }, { threshold: 0.6, root: document.querySelector('.gallery-container') });
+
+        document.querySelectorAll('.gallery-card').forEach(card => {
+            galleryObserver.observe(card);
+        });
+
+        // --- TYPEWRITER ---
+        const textToType = "Gayatri,\n\nLoving you is the best thing that ever happened to me.\nI want to wake up with you every day,\nlaugh with you,\nand grow old with you.";
+        const typeContainer = document.getElementById('typed-text');
+        let typeIndex = 0;
+        let isTypingStarted = false;
+
+        function typeWriter() {
+            if (typeIndex < textToType.length) {
+                if (textToType.charAt(typeIndex) === '\n') {
+                    typeContainer.innerHTML += '<br>';
+                } else {
+                    typeContainer.innerHTML += textToType.charAt(typeIndex);
+                }
+                typeIndex++;
+                setTimeout(typeWriter, 50);
+            } else {
+                typeContainer.innerHTML += '<span class="cursor"></span>';
+            }
+        }
+
+        // --- SCROLL OBSERVER ---
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    if (entry.target.closest('#love-letter') && !isTypingStarted) {
+                        isTypingStarted = true;
+                        typeWriter();
+                    }
+                }
+            });
+        }, { threshold: 0.2 });
+
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+        observer.observe(document.querySelector('.glass-card'));
+
+        // --- PROPOSAL YES ---
+        function sayYes() {
+            const overlay = document.getElementById('yes-screen');
+            overlay.classList.add('active');
+            
+            // INTENSE Hearts
+            let count = 0;
+            const burst = setInterval(() => {
+                createParticle('heart');
+                createParticle('heart');
+                createParticle('sparkle');
+                count++;
+                if(count > 50) clearInterval(burst);
+            }, 100);
+        }
+
+        // Prevent audio pausing if possible (though browser might force it)
+        audio.addEventListener('pause', () => {
+            // Try to force resume if user didn't initiate it (simple check)
+            if(document.visibilityState === 'visible') {
+                audio.play();
+            }
+        });
+    </script>
+</body>
+</html>
